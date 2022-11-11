@@ -15,11 +15,11 @@ class JsonSyncService<K : IStoreObject>(
     private val dataType: Class<K>
 ) : ParentRepository<K>(dataType)
 {
-    private var destinationFile: String? = null
+    private var destinationFile: File? = null
 
     private val type: Type = object : TypeToken<MutableList<K>>() {}.type
 
-    private val file = File(destinationFile + (dataType.simpleName + "-configuration.json"))
+    private val file = File(destinationFile, dataType.simpleName + "-configuration.json")
 
     val cache: HashMap<UUID, K> = hashMapOf()
 
@@ -80,7 +80,7 @@ class JsonSyncService<K : IStoreObject>(
         }
     }
 
-    fun defineFile(location: String) : JsonSyncService<K>
+    fun defineFile(location: File) : JsonSyncService<K>
     {
         return this.apply {
             this.destinationFile = location
