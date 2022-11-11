@@ -21,16 +21,13 @@ object SyncRepositoryOrchestrator
     {
         var repositoryToCreate: ParentRepository<T>? = null
 
-        when (type)
-        {
-            SyncStoreType.MONGO_SYNC ->
-            {
-                repositoryToCreate = MongoService<T>(classFor)
+        repositoryToCreate = when (type) {
+            SyncStoreType.MONGO_SYNC -> {
+                MongoService<T>(classFor)
             }
 
-            SyncStoreType.JSON_SYNC ->
-            {
-                repositoryToCreate = JsonSyncService<T>(classFor)
+            SyncStoreType.JSON_SYNC -> {
+                JsonSyncService<T>(classFor)
             }
         }
 
