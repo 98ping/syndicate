@@ -12,12 +12,15 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
-    //mongo and serializers
+    //mongo
     implementation "org.mongodb:mongo-java-driver:3.12.10"
-    implementation "com.google.code.gson:gson:2.8.9"
 
     //reactor
     implementation 'io.projectreactor:reactor-core:3.4.24'
+
+    //google
+    implementation 'com.google.guava:guava:r05'
+    implementation "com.google.code.gson:gson:2.8.9"
 }
 
 compileKotlin {

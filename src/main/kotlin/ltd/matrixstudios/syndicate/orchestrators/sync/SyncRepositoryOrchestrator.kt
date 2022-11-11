@@ -3,6 +3,7 @@ package ltd.matrixstudios.syndicate.orchestrators.sync
 import ltd.matrixstudios.syndicate.objects.IStoreObject
 import ltd.matrixstudios.syndicate.repository.async.AsyncParentRepository
 import ltd.matrixstudios.syndicate.repository.sync.ParentRepository
+import ltd.matrixstudios.syndicate.storage.json.sync.JsonSyncService
 import ltd.matrixstudios.syndicate.storage.mongo.sync.MongoService
 import ltd.matrixstudios.syndicate.types.sync.SyncStoreType
 import java.lang.IllegalArgumentException
@@ -25,6 +26,11 @@ object SyncRepositoryOrchestrator
             SyncStoreType.MONGO_SYNC ->
             {
                 repositoryToCreate = MongoService<T>(classFor)
+            }
+
+            SyncStoreType.JSON_SYNC ->
+            {
+                repositoryToCreate = JsonSyncService<T>(classFor)
             }
         }
 

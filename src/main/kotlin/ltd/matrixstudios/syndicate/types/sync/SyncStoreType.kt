@@ -4,4 +4,7 @@ enum class SyncStoreType
 {
     //mongo
     MONGO_SYNC,
+
+    //json
+    JSON_SYNC
 }

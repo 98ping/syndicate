@@ -22,7 +22,7 @@ object AsyncRepositoryOrchestrator
 
         when (type)
         {
-            AsyncStoreType.ASYNC_MONGO->
+            AsyncStoreType.ASYNC_MONGO ->
             {
                 repositoryToCreate = AsyncMongoService<T>(classFor)
             }

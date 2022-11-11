@@ -42,19 +42,6 @@ class AsyncMongoService<K : IStoreObject>(
         return Flux.fromIterable(finalItems)
     }
 
-    override fun withAllWithTarget(targetField: String, targetValue: Any): Flux<K> {
-        val finalItems = mutableListOf<K>()
-
-        for (item in collection.find(Filters.eq(targetField, targetValue)))
-        {
-            val value = GsonAssembler.fromJson(item.toJson(), dataType)
-
-            finalItems.add(value)
-        }
-
-        return Flux.fromIterable(finalItems)
-    }
-
     override fun save(value: K) {
         val json = GsonAssembler.toJson(value)
 

@@ -14,7 +14,6 @@ abstract class ParentRepository<K : IStoreObject>(
     abstract fun findById(id: UUID) : K?
 
     abstract fun findAll() : MutableList<K>
-    abstract fun withAllWithTarget(targetField: String, targetValue: Any) : MutableList<K>
 
     abstract fun loadToLocalCache()
 }
