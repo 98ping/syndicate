@@ -1,24 +1,21 @@
-package ltd.matrixstudios.syndicate.storage
+package ltd.matrixstudios.syndicate.storage.mongo.sync
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.UpdateOptions
-import com.mongodb.client.result.UpdateResult
 import ltd.matrixstudios.syndicate.Syndicate
 import ltd.matrixstudios.syndicate.assembly.gson.GsonAssembler
 import ltd.matrixstudios.syndicate.objects.IStoreObject
+import ltd.matrixstudios.syndicate.repository.sync.ParentRepository
 import org.bson.Document
 import java.util.UUID
 
 class MongoService<K : IStoreObject>(
     private val dataType: Class<K>
-)
+) : ParentRepository<K>(dataType)
 {
-    val localCache: HashMap<UUID, K> = hashMapOf()
-
     private val collection = Syndicate.stream.collection(dataType.simpleName)
 
-    fun depositToCache()
-    {
+    override fun loadToLocalCache() {
         GsonAssembler.listToObjects(
             collection.find().into(arrayListOf()), dataType
         ).apply {
@@ -29,8 +26,7 @@ class MongoService<K : IStoreObject>(
         }
     }
 
-    fun findAll() : MutableList<K>
-    {
+    override fun findAll(): MutableList<K> {
         val finalItems = mutableListOf<K>()
 
         for (item in collection.find())
@@ -43,11 +39,23 @@ class MongoService<K : IStoreObject>(
         return finalItems
     }
 
-    fun save(value: K) : UpdateResult
-    {
+    override fun withAllWithTarget(targetField: String, targetValue: Any): MutableList<K> {
+        val finalItems = mutableListOf<K>()
+
+        for (item in collection.find(Filters.eq(targetField, targetValue)))
+        {
+            val value = GsonAssembler.fromJson(item.toJson(), dataType)
+
+            finalItems.add(value)
+        }
+
+        return finalItems
+    }
+
+    override fun save(value: K) {
         val json = GsonAssembler.toJson(value)
 
-        return collection.updateOne(
+        collection.updateOne(
             Filters.eq(
                 "_id",
                 value.id
@@ -57,4 +65,11 @@ class MongoService<K : IStoreObject>(
             ),
             UpdateOptions().upsert(true))
     }
+
+    override fun findById(id: UUID): K {
+        val document = collection.find(Filters.eq("_id", id.toString()))
+
+        return GsonAssembler.fromJson(document.toString(), dataType)
+    }
+
 }
