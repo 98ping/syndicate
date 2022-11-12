@@ -76,7 +76,10 @@ class JsonSyncService<K : IStoreObject>(
 
     override fun loadToLocalCache() {
         findAll().forEach {
-            cache[it.id] = it
+            if (it is IStoreObject && it.id != null)
+            {
+                cache[it.id] = it
+            }
         }
     }
 
