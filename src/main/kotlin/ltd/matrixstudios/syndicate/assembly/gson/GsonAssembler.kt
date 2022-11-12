@@ -8,7 +8,7 @@ import org.bson.Document
 
 object GsonAssembler
 {
-    val gson: Gson = GsonBuilder()
+    var gson: Gson = GsonBuilder()
         .serializeNulls()
         .setLongSerializationPolicy(LongSerializationPolicy.STRING)
         .create()
