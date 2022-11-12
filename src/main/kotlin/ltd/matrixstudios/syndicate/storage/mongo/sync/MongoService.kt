@@ -14,18 +14,6 @@ class MongoService<K : IStoreObject>(
 ) : ParentRepository<K>(dataType)
 {
     private val collection = Syndicate.stream.collection(dataType.simpleName)
-
-    override fun loadToLocalCache() {
-        GsonAssembler.listToObjects(
-            collection.find().into(arrayListOf()), dataType
-        ).apply {
-            for (item in this)
-            {
-                localCache[item.id] = item
-            }
-        }
-    }
-
     override fun findAll(): MutableList<K> {
         val finalItems = mutableListOf<K>()
 

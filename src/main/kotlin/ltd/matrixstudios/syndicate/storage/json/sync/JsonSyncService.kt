@@ -21,8 +21,6 @@ class JsonSyncService<K : IStoreObject>(
 
     private val file = File(destinationFile, dataType.simpleName + "-configuration.json")
 
-    val cache: HashMap<UUID, K> = hashMapOf()
-
     private fun writeBlankJson()
     {
         if (!file.exists())
@@ -30,22 +28,28 @@ class JsonSyncService<K : IStoreObject>(
             file.createNewFile()
         }
 
-        Files.write(GsonAssembler.gson.toJson(cache.values), file, Charsets.UTF_8)
+        Files.write(GsonAssembler.gson.toJson(localCache.values), file, Charsets.UTF_8)
     }
 
-    override fun save(value: K) {
-        cache[value.id] = value
+    override fun save(
+        value: K
+    )
+    {
+        localCache[value.id] = value
 
         if (!file.exists())
         {
             file.createNewFile()
         }
 
-        Files.write(GsonAssembler.gson.toJson(cache.values), file, Charsets.UTF_8)
+        Files.write(GsonAssembler.gson.toJson(localCache.values), file, Charsets.UTF_8)
     }
 
-    override fun findById(id: UUID): K? {
-        if (cache.containsKey(id)) return cache[id]
+    override fun findById(
+        id: UUID
+    ): K?
+    {
+        if (localCache.containsKey(id)) return localCache[id]
 
         for (item in findAll())
         {
@@ -58,12 +62,14 @@ class JsonSyncService<K : IStoreObject>(
         return null
     }
 
-    override fun findAll(): MutableList<K> {
+    override fun findAll(): MutableList<K>
+    {
         val reader = Files.newReader(file, Charsets.UTF_8)
 
         val items = mutableListOf<K>()
 
-        if (reader != null) {
+        if (reader != null)
+        {
             val elements = GsonAssembler.gson.fromJson<MutableList<K>>(reader, type)
 
             items.addAll(elements)
@@ -74,16 +80,9 @@ class JsonSyncService<K : IStoreObject>(
         return items
     }
 
-    override fun loadToLocalCache() {
-        findAll().forEach {
-            if (it is IStoreObject && it.id != null)
-            {
-                cache[it.id] = it
-            }
-        }
-    }
-
-    fun defineFile(location: File) : JsonSyncService<K>
+    fun defineFile(
+        location: File
+    ) : JsonSyncService<K>
     {
         return this.apply {
             this.destinationFile = location

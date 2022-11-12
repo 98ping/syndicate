@@ -17,6 +17,4 @@ abstract class AsyncParentRepository<K : IStoreObject>(
     abstract fun findById(id: UUID) : Mono<K?>
 
     abstract fun findAll() : Flux<K>
-
-    abstract fun loadToLocalCache()
 }
