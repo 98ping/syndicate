@@ -46,10 +46,13 @@ class AsyncMongoService<K : IStoreObject>(
     }
 
     override fun findById(id: UUID): Mono<K?> {
-        val document = collection.find(Filters.eq("_id", id.toString()))
+        val document = collection.find(Filters.eq("_id", id.toString())).first()
 
-        val item = GsonAssembler.fromJson(document.toString(), dataType)
+        if (document != null)
+        {
+            return Mono.just(GsonAssembler.fromJson(document.toJson(), dataType))
+        }
 
-        return Mono.just(item)
+        return Mono.just(null)
     }
 }

@@ -41,10 +41,14 @@ class MongoService<K : IStoreObject>(
             UpdateOptions().upsert(true))
     }
 
-    override fun findById(id: UUID): K {
-        val document = collection.find(Filters.eq("_id", id.toString()))
+    override fun findById(id: UUID): K? {
+        val document = collection.find(Filters.eq("_id", id.toString())).first()
 
-        return GsonAssembler.fromJson(document.toString(), dataType)
+        if (document != null) {
+            return GsonAssembler.fromJson(document.toJson(), dataType)
+        }
+
+        return null
     }
 
 }
