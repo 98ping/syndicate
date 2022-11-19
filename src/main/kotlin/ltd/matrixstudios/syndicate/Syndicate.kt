@@ -6,5 +6,5 @@ import ltd.matrixstudios.syndicate.streams.MongoDataStream
 
 object Syndicate
 {
-    val stream = MongoCharacteristicBuilder.makeDefaultStream()
+    var stream = MongoCharacteristicBuilder.makeDefaultStream()
 }
